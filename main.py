@@ -28,7 +28,7 @@ class Philosopher(threading.Thread):
 
     def __str__(self):
         hungry: bool = self.hungriness <= self.thinking_threshold
-        if hungry and self in waiter.l:
+        if hungry and self in waiter.array:
             return f'Philosopher {self.idx} is currently hungry and in waiting list'
         elif hungry:
             return f'Added Philosopher {self.idx} is hungry.'
@@ -48,7 +48,7 @@ class Philosopher(threading.Thread):
         hungry: bool = self.hungriness >= self.thinking_threshold
         if not hungry:
             print(f'Philosopher {self.idx} is currently thinking')
-        elif hungry and self not in waiter.l:
+        elif hungry and self not in waiter.array:
             waiter.add(self)
             print(f'Added Philosopher {self.idx} to the waiting queue')
         else:
@@ -67,37 +67,47 @@ class Chopstick:
         if idx is None:
             idx = random.randrange(1, 10)
         self.id = idx
-        self.is_hold = False
-        self.held_by = None
+        self.is_held: bool = False
+        self.held_by: Philosopher = None
 
     def __str__(self):
-        if self.is_hold:
+        if self.is_held:
             return f'Chopstick #{self.id} status is hold.'
         return f'Chopstick #{self.id} status is free.'
 
-    def get_status(self):
-        return self.is_hold
+    def is_free(self):
+        return self.is_held
 
     def assign_philosopher(self, philosopher: Philosopher = None):
-        pass
+        self.is_held = True
+        self.held_by = philosopher
 
 
 class Waiter(threading.Thread):
     def __init__(self):
         super(Waiter, self).__init__()
         self.queue = queue.Queue()
-        self.l = []
+        self.array = []
 
     def add(self, item: object):
-        if item not in self.l:
+        if item not in self.array:
             self.queue.put(item)
-            self.l.append(item)
-        else:
-            pass
+            self.array.append(item)
+
+    def get_chopsticks(phil: Philosopher):
+
+        return
 
     def serve(self):
-        item = self.queue.pop()
-        self.l.remove(item)
+        phil: Philosopher = self.queue.pop()
+
+        left_chopstick = chopsticks[(phil.idx - 1) % 5]
+        right_chopstick = chopsticks[phil.idx % 5]
+
+        if left_chopstick.is_free() and right_chopstick.is_free():
+            left_chopstick.assign_philosopher(phil)
+            right_chopstick.assign_philosopher(phil)
+        self.array.remove(phil)
 
 
 class CustomThread(threading.Thread):
@@ -113,14 +123,14 @@ if __name__ == '__main__':
     global chopsticks
     global waiter
 
-    philosophers = (Philosopher(1), Philosopher(2), Philosopher(3), Philosopher(4), Philosopher(5))
-    chopstick: Chopstick = (Chopstick(1), Chopstick(2), Chopstick(3), Chopstick(4), Chopstick(5))
+    philosophers = (Philosopher(0), Philosopher(1), Philosopher(2), Philosopher(3), Philosopher(4))
+    chopstick: Chopstick = (Chopstick(0), Chopstick(1), Chopstick(2), Chopstick(3), Chopstick(4))
 
     waiter = Waiter()
     waiter.start()
 
     print("Program started")
-    print("Starting philosophers Threads")
-    for person in philosophers:
-        person.start()
 
+    for person in philosophers:
+        print("Starting philosopher Threads")
+        person.start()
