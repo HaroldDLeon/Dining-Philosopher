@@ -33,16 +33,16 @@ class Philosopher(threading.Thread):
     def __str__(self):
         hungry: bool = self.hungriness <= self.thinking_threshold
         if hungry:
-            return f'Added Philosopher {self.idx} is hungry. \n'
+            return f'Added Philosopher {self.idx} is hungry. '
         else:
-            return f'Added Philosopher {self.idx} is still thinking. \n'
+            return f'Added Philosopher {self.idx} is still thinking. '
 
     def try_to_eat(self):
         left_chopstick = chopsticks[(self.idx - 1) % 5]
         right_chopstick = chopsticks[self.idx % 5]
 
         if left_chopstick.is_free() and right_chopstick.is_free():
-            print(f'Philosopher {self.idx} is now eating. \n')
+            print(f'Philosopher {self.idx} got hungry and is now eating. ')
 
             self.left_chopstick = left_chopstick
             self.right_chopstick = right_chopstick
@@ -71,15 +71,14 @@ class Philosopher(threading.Thread):
     def print_status(self):
         hungry: bool = self.hungriness >= self.thinking_threshold
         if not hungry or self.eating:
-            print(f'Philosopher {self.idx} is currently thinking. \n')
+            print(f'Philosopher {self.idx} is currently thinking. ')
         else:
-            print(f'Philosopher {self.idx} is hungry. \n')
+            print(f'Philosopher {self.idx} is hungry. ')
 
     def run(self):
         while True:
             self.print_status()
             if self.thinking_threshold <= self.hungriness <= self.hungry_threshold:
-                print(f'Philosopher {self.idx} got hungry. \n')
                 self.try_to_eat()
             else:
                 self.hungriness += 1
@@ -97,8 +96,8 @@ class Chopstick:
 
     def __str__(self):
         if self.is_held:
-            return f'Chopstick #{self.id} status is hold. \n'
-        return f'Chopstick #{self.id} status is free. \n'
+            return f'Chopstick #{self.id} status is hold. '
+        return f'Chopstick #{self.id} status is free. '
 
     def is_free(self):
         return not self.is_held
@@ -118,8 +117,10 @@ if __name__ == '__main__':
     chopsticks = (Chopstick(0), Chopstick(1), Chopstick(2), Chopstick(3), Chopstick(4))
 
     print("Program started")
+
     check = ChopsticksCheck()
-    check.start()
+    # check.start()
+
     for person in philosophers:
-        print("Starting philosopher Threads. \n")
+        print("Starting philosopher Threads. ")
         person.start()
