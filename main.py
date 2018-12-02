@@ -39,6 +39,7 @@ class Philosopher(threading.Thread):
         self.right_chopstick.assign_philosopher(self)
 
     def release_chopsticks(self):
+        print(f'Philosopher {self.idx} putting down chopsticks. \n')
         self.left_chopstick.release()
         self.right_chopstick.release()
 
@@ -127,7 +128,7 @@ class Waiter(threading.Thread):
                 phil.bye_hungry()
                 self.array.remove(phil)
 
-                print(f'Waiter served Philosopher {phil.idx}. \n')
+                print(f'Philosopher {phil.idx}. is now eating. \n')
 
     def run(self):
         while True:
