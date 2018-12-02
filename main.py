@@ -20,7 +20,7 @@ class Philosopher(threading.Thread):
         self.idx = idx
 
         self.eating: bool = False
-
+        self.has_eaten: int = 0
         self.hungry_threshold = 10
         self.thinking_threshold = 5
 
@@ -42,7 +42,7 @@ class Philosopher(threading.Thread):
         right_chopstick = chopsticks[self.idx % 5]
 
         if left_chopstick.is_free() and right_chopstick.is_free():
-            print(f'Philosopher {self.idx} got hungry and is now eating. ')
+            print(f'Philosopher {self.idx} got hungry and is taking the chopsticks. ')
 
             self.left_chopstick = left_chopstick
             self.right_chopstick = right_chopstick
@@ -55,6 +55,7 @@ class Philosopher(threading.Thread):
             self.release_chopsticks()
 
     def release_chopsticks(self):
+        print(f'Philosopher {self.idx} is putting down the chopsticks')
         self.left_chopstick.release()
         self.right_chopstick.release()
 
@@ -66,7 +67,11 @@ class Philosopher(threading.Thread):
 
     def eat(self):
         self.eating = True
+        self.has_eaten += 1
         self.hungriness = 0
+
+    def consult_stomach(self):
+        print(f'Philosopher {self.idx} has eaten {self.has_eaten} time(s).')
 
     def print_status(self):
         hungry: bool = self.hungriness >= self.thinking_threshold
